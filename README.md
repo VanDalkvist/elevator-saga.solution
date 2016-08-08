@@ -1,1 +1,1 @@
-# elevator-saga.solution
+# Solutions for [elevator-saga](http://play.elevatorsaga.com/)
