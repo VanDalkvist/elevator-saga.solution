@@ -55,6 +55,8 @@
                 console.log(floorNum + ' floor pushed to upQueue');
             }
 
+            console.log('up button: up queue: ' + upQueue.join(', ') + '; down queue: ' + downQueue.join(', ') + '; shared queue: ' + sharedQueue.join(', '));
+
             //for (var i = 0; i < elevators.length; i++) {
             //    var elevator = elevators[0];
 
@@ -96,12 +98,14 @@
                 downQueue = downQueue.sort();
                 console.log(floorNum + ' floor pushed to downQueue');
             }
+            console.log('down button: up queue: ' + upQueue.join(', ') + '; down queue: ' + downQueue.join(', ') + '; shared queue: ' + sharedQueue.join(', '));
         }
 
         function _findFloorToGoTo(elevator) {
             var identity = _getFloorComparer(elevator);
             console.log('idle on ' + elevator.currentFloor() + ' floor. Searching near floor...');
             console.log('idle: up queue: ' + upQueue.join(', ') + '; down queue: ' + downQueue.join(', ') + '; shared queue: ' + sharedQueue.join(', '));
+
             var nearPressedFloor = _getNearPressedFloor(elevator, sharedQueue, identity);
 
             if (nearPressedFloor === undefined || nearPressedFloor === null) {
@@ -137,7 +141,9 @@
 
         function _syncQueues(floor) {
             var foundIndex = sharedQueue.indexOf(floor);
-            sharedQueue.splice(foundIndex, 1);
+            if (foundIndex > -1) {
+                sharedQueue.splice(foundIndex, 1);
+            }
 
             foundIndex = upQueue.indexOf(floor);
             if (foundIndex > -1) {
@@ -245,6 +251,7 @@
             }
 
             var floors = pressed.filter(identity);
+            console.log('filtered: ' + floors.join(', '));
 
             var sorted = floors.sort();
 
