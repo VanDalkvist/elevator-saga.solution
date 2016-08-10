@@ -106,6 +106,8 @@
             console.log('idle on ' + elevator.currentFloor() + ' floor. Searching near floor...');
             console.log('idle: up queue: ' + upQueue.join(', ') + '; down queue: ' + downQueue.join(', ') + '; shared queue: ' + sharedQueue.join(', '));
 
+            // todo: optimize - if another elevator has selected near floor in pressed Floors
+            // and here is a free place search for another near floor except found floor.
             var nearPressedFloor = _getNearPressedFloor(elevator, sharedQueue, identity);
 
             if (nearPressedFloor === undefined || nearPressedFloor === null) {
