@@ -33,18 +33,6 @@
                 return;
             }
 
-            // var matched = elevators.filter(function (elevator) {
-            //     return elevator.destinationDirection() === "up"
-            //         && elevator.currentFloor() < floorNum
-            //         && elevator.loadFactor() <= 0.7;
-            // });
-            //
-            // if (matched && matched.length > 0) {
-            //     matched[0].goToFloor(floorNum);
-            //     console.log(floorNum + ' floor added to elevator queue (up)');
-            //     return;
-            // }
-
             if (sharedQueue.indexOf(floorNum) < 0) {
                 sharedQueue.push(floorNum);
                 console.log(floorNum + ' floor pushed to sharedQueue');
@@ -56,14 +44,6 @@
             }
 
             console.log('up button: up queue: ' + upQueue.join(', ') + '; down queue: ' + downQueue.join(', ') + '; shared queue: ' + sharedQueue.join(', '));
-
-            //for (var i = 0; i < elevators.length; i++) {
-            //    var elevator = elevators[0];
-
-            //    elevator.destinationQueue = [];
-            //    elevator.checkDestinationQueue();
-            // elevator.goToFloor(floor.floorNum(), true);
-            //}
         }
 
         function _handleDownButtonPressOnFloor(floor) {
@@ -76,18 +56,6 @@
                 console.log('stopped elevator goes to ' + floorNum);
                 return;
             }
-
-            // var matched = elevators.filter(function (elevator) {
-            //     return elevator.destinationDirection() === "down"
-            //         && elevator.currentFloor() > floorNum
-            //         && elevator.loadFactor() <= 0.7;
-            // });
-            //
-            // if (matched && matched.length > 0) {
-            //     matched[0].goToFloor(floorNum);
-            //     console.log(floorNum + ' floor added to elevator queue (down)');
-            //     return;
-            // }
 
             if (sharedQueue.indexOf(floorNum) < 0) {
                 sharedQueue.push(floorNum);
