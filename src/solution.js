@@ -96,10 +96,12 @@
             _syncQueues(floorNum);
 
             console.log('elevator stopped at ' + elevator.currentFloor() + ' floor. Searching near floor...');
-            var nearPressedFloor = _getNearPressedFloor(elevator, elevator.getPressedFloors(), identity);
+
+            var pressedFloors = elevator.getPressedFloors();
+            var nearPressedFloor = _getNearPressedFloor(elevator, pressedFloors, identity);
 
             if (nearPressedFloor === undefined || nearPressedFloor === null) {
-                console.log('floor_button_pressed: nothing to do');
+                console.log('stopped at floor: nothing to do');
                 return;
             }
 
@@ -110,19 +112,15 @@
         }
 
         function _syncQueues(floor) {
-            var foundIndex = sharedQueue.indexOf(floor);
-            if (foundIndex > -1) {
-                sharedQueue.splice(foundIndex, 1);
-            }
+            _removeIfExists(sharedQueue, floor);
+            _removeIfExists(upQueue, floor);
+            _removeIfExists(downQueue, floor);
+        }
 
-            foundIndex = upQueue.indexOf(floor);
+        function _removeIfExists(arr, element) {
+            var foundIndex = arr.indexOf(element);
             if (foundIndex > -1) {
-                upQueue.splice(foundIndex, 1);
-            }
-
-            foundIndex = downQueue.indexOf(floor);
-            if (foundIndex > -1) {
-                downQueue.splice(foundIndex, 1);
+                arr.splice(foundIndex, 1);
             }
         }
 
