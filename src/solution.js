@@ -74,20 +74,48 @@
             console.log('idle on ' + elevator.currentFloor() + ' floor. Searching near floor...');
             console.log('idle: up queue: ' + upQueue.join(', ') + '; down queue: ' + downQueue.join(', ') + '; shared queue: ' + sharedQueue.join(', '));
 
-            // todo: optimize - if another elevator has selected near floor in pressed Floors
-            // and here is a free place search for another near floor except found floor.
-            var nearPressedFloor = _getNearPressedFloor(elevator, sharedQueue, identity);
+            _findFloorAndElevator(elevator, sharedQueue, identity);
+        }
+
+        function _findFloorAndElevator(elevator, floorList, identity, excludedFloors) {
+            var nearPressedFloor = _getNearPressedFloor(elevator, floorList, identity, excludedFloors);
 
             if (nearPressedFloor === undefined || nearPressedFloor === null) {
                 console.log('near floor was not found.');
-                return;
+                return {};
             }
 
             _syncQueues(nearPressedFloor);
+            console.log(
+                'idle: up queue: ' + upQueue.join(', ')
+                + '; down queue: ' + downQueue.join(', ')
+                + '; shared queue: ' + sharedQueue.join(', '));
 
-            console.log('idle: up queue: ' + upQueue.join(', ') + '; down queue: ' + downQueue.join(', ') + '; shared queue: ' + sharedQueue.join(', '));
-            elevator.goToFloor(nearPressedFloor);
-            console.log('go to near floor - ' + nearPressedFloor);
+            var betterElevator = _getBetterElevator(elevator, nearPressedFloor);
+            if (betterElevator != null) {
+                excludedFloors = excludedFloors || [];
+                excludedFloors.push(nearPressedFloor);
+
+                _findFloorAndElevator(elevator, floorList, identity, excludedFloors);
+            }
+            else {
+                elevator.goToFloor(nearPressedFloor);
+
+                console.log('go to near floor - ' + nearPressedFloor);
+            }
+        }
+
+        function _getBetterElevator(elevatorToIgnore, purposeFloor) {
+            for (var i = 0; i < elevators.length; i++) {
+                var elevator = elevators[i];
+                if (elevator === elevatorToIgnore) continue;
+
+                // todo: optimize - select elevator only if it has little time to go to purpose floor (think up)
+                if (elevator.getPressedFloors().indexOf(purposeFloor) > -1) {
+                    return elevator;
+                }
+            }
+            return null;
         }
 
         function _stoppedAtFloorHandler(elevator, floorNum) {
@@ -207,7 +235,7 @@
             };
         }
 
-        function _getNearPressedFloor(elevator, floorList, identity) {
+        function _getNearPressedFloor(elevator, floorList, identity, excludedFloors) {
             var pressed = floorList;
 
             if (pressed.length === 0) {
@@ -218,7 +246,9 @@
                 return pressed[0];
             }
 
-            var floors = pressed.filter(identity);
+            var floors = pressed.filter(function (floor) {
+                return identity(floor) && (!!excludedFloors ? excludedFloors.indexOf(floor) < 0 : true);
+            });
             console.log('filtered: ' + floors.join(', '));
 
             var sorted = floors.sort();
