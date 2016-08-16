@@ -173,6 +173,7 @@
             console.log('passing_floor: ' + floorNum + ', ' + direction);
             console.log('up queue: ' + upQueue.join(', ') + '; down queue: ' + downQueue.join(', ') + '; shared queue: ' + sharedQueue.join(', '));
 
+            // todo: elevator is going to floor with opposite direction selected.
             var pressedFloors = elevator.getPressedFloors();
             if (pressedFloors.indexOf(floorNum) > -1) {
                 elevator.goToFloor(floorNum, true);
